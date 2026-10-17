@@ -1,5 +1,31 @@
 # Plan: Grill Lift — app Android para subir/bajar la parrilla
 
+## Estado (17/10/2026)
+
+**Hecho:**
+- **Tuya:** cuenta creada con aixanzr@gmail.com.
+- **App SDK "Grill Lift" en Tuya** (id 219071882):
+  - Edición de desarrollo: gratis, hasta 100 usuarios, no se puede publicar en tiendas.
+  - Región: fuera de China continental.
+  - Paquete `com.aixanzr.grilllift`, con el SHA-256 del keystore de debug registrado.
+  - Las claves están en `.env` y el componente de seguridad en `tuya/security-algorithm.aar`. Ninguno de los dos se sube al repo.
+- **Etapas 2 a 5:**
+  - Proyecto Expo.
+  - Sesión y hogar.
+  - Emparejamiento EZ.
+  - Máquina de estados con tests.
+  - Pantalla de control.
+- **Herramientas:** Node 22 (nvm), JDK 17 en `~/.local/jdk-17` y Android SDK en `~/Android/Sdk` (variables en `~/.bashrc`).
+
+**Pendiente (necesita la parrilla o el teléfono):**
+- Etapa 1: confirmar qué canal sube, si el módulo es EZ o BLE y cómo se resetea. Los valores por defecto están en `src/config.ts`.
+- Etapa 6: instalar el APK en el teléfono. El APK de release ya está compilado y copiado a `Descargas\grill-lift-mvp.apk` en Windows. Trae el JavaScript adentro, así que alcanza con pasarlo al teléfono e instalarlo. `usbipd-win` solo hace falta para desarrollar con Metro.
+- Etapa 7: las pruebas en la parrilla real (§8).
+
+**A tener en cuenta en la primera prueba:**
+- El portal de Tuya generó el SDK 7.8.0, pero la librería usa la 7.5.1. Si al arrancar aparece "illegal client" o "Permission verification failed", lo primero a probar es forzar `com.thingclips.smart:thingsmart:7.8.0`.
+- La edición de prueba de Tuya muestra un aviso (Toast) al abrir la app y puede pedir el permiso de ubicación al inicio. Es esperable.
+
 ## 1. Contexto
 
 La parrilla ya tiene un motor conectado a un módulo **DEMASLED DOMO-18-2G**, que funciona bien con **Smart Life** y con el **control remoto**. Smart Life es genérica y confusa para un usuario común, así que queremos una app Android propia, en **React Native**, que haga solo dos cosas:
@@ -165,6 +191,11 @@ Se armó un proyecto de prueba con Expo SDK 58 (React Native 0.88, Android Gradl
 3. **Namespaces duplicados:** varios módulos del SDK de Tuya usan el mismo namespace y Android Gradle Plugin 9 corta la compilación. Se resuelve con `android.uniquePackageNames=false` en `android/gradle.properties`.
 
 Las correcciones 1 y 2 ya están en `patches/@owowagency+react-native-tuya+2.0.3.patch`. Se aplican solas con `patch-package` en `postinstall`. La 3 va en un config plugin local (`plugins/withGradleFixes.js`, con `withGradleProperties`), porque `android/` se regenera.
+
+Al compilar el proyecto real aparecieron dos más, que también resuelve `plugins/withGradleFixes.js`:
+
+4. **R8 en release:** Expo 58 activa la minificación en release, y R8 falla con el SDK de Tuya porque le faltan reglas de ProGuard. Se desactiva con `android.enableMinifyInReleaseBuilds=false`. Las reglas quedan para `PULIDO.md`.
+5. **Arquitecturas:** el SDK de Tuya solo trae binarios ARM, así que se compila solo `armeabi-v7a` y `arm64-v8a` (`reactNativeArchitectures`).
 
 **Lo que no se pudo verificar sin tu cuenta de Tuya y la parrilla:** que el SDK arranque con el `.aar` real, el login por UID, el emparejamiento y los comandos. Eso queda para las etapas 1 y 7.
 
