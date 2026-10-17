@@ -1,0 +1,26 @@
+diff --git a/node_modules/@owowagency/react-native-tuya/android/build.gradle b/node_modules/@owowagency/react-native-tuya/android/build.gradle
+index 8664f3d..39def4b 100644
+--- a/node_modules/@owowagency/react-native-tuya/android/build.gradle
++++ b/node_modules/@owowagency/react-native-tuya/android/build.gradle
+@@ -42,7 +42,7 @@ android {
+     buildTypes {
+         release {
+             minifyEnabled false
+-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
++            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+         }
+     }
+ 
+diff --git a/node_modules/@owowagency/react-native-tuya/android/src/main/java/com/tuya/smart/rnsdk/activator/TuyaActivatorModule.kt b/node_modules/@owowagency/react-native-tuya/android/src/main/java/com/tuya/smart/rnsdk/activator/TuyaActivatorModule.kt
+index e5eb33f..cae8e0f 100644
+--- a/node_modules/@owowagency/react-native-tuya/android/src/main/java/com/tuya/smart/rnsdk/activator/TuyaActivatorModule.kt
++++ b/node_modules/@owowagency/react-native-tuya/android/src/main/java/com/tuya/smart/rnsdk/activator/TuyaActivatorModule.kt
+@@ -99,7 +99,7 @@ class TuyaActivatorModule(reactContext: ReactApplicationContext) : NativeTuyaAct
+   }
+ 
+   override fun openNetworkSettings(params: ReadableMap) {
+-    val currentActivity = currentActivity
++    val currentActivity = getCurrentActivity()
+     if (currentActivity == null) {
+       return
+     }
