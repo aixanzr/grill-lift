@@ -1,0 +1,6 @@
+android/
+ios/
+node_modules/
+patches/
+*.md
+package-lock.json
